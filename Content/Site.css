@@ -29,3 +29,59 @@ textarea {
         padding: 0;
     }
 }
+
+#POE_wiki_style a {
+    background: black;
+    color: #cd740f;
+    font-weight: 600;
+}
+
+    #POE_wiki_style a:hover {
+        text-decoration: underline;
+    }
+
+#POE_wiki_style li {
+    background: black;
+}
+
+#POE_wiki_style ul {
+    background: black;
+}
+
+#POE_wiki_style h2 {
+    color: #dfcc99;
+}
+
+#POE_wiki_style p {
+    color: #a38d6d;
+}
+
+#POE_wiki_style td {
+    padding: 10px;
+}
+
+#POE_wiki_style input[type=text] {
+    background: black;
+    color: #D77524;
+    border: 2px solid #a38d6d;
+}
+
+    #POE_wiki_style input[type=text]:focus, input[type=text]:hover {
+        background: black;
+        color: #D77524;
+        border: 3px solid #dfcc99;
+        outline: none;
+    }
+
+#POE_wiki_style input[type=submit] {
+    background: #66452c;
+    color: #cd740f;
+    border: solid #66452c;
+}
+
+    #POE_wiki_style input[type=submit]:focus, input[type=submit]:hover {
+        background: #66452c;
+        color: #cd740f;
+        border: solid #66452c;
+        outline: none;
+    }
