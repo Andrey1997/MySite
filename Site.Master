@@ -59,9 +59,9 @@
                         <li class="dropdown" id="POE_wiki_style">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">POE <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
-                                <li><a class="dropdown-item" runat="server" href="">DPS item</a></li>
-                                <li><a class="dropdown-item" runat="server" href="">min/max dps item</a></li>
-                                <li><a class="dropdown-item" runat="server" href="">life</a></li>
+                                <li><a class="dropdown-item" runat="server" href="~/Page/POE/DPS_item.aspx">DPS item</a></li>
+                                <li><a class="dropdown-item" runat="server" href="~/Page/POE/min_max_DPS">min/max dps item</a></li>
+                                <li><a class="dropdown-item" runat="server" href="~/Page/POE/Life_character.aspx">life</a></li>
                             </ul>
                         </li>
                     </ul>
