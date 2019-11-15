@@ -36,9 +36,9 @@ textarea {
     font-weight: 600;
 }
 
-    #POE_wiki_style a:hover {
-        text-decoration: underline;
-    }
+#POE_wiki_style a:hover {
+    text-decoration: underline;
+}
 
 #POE_wiki_style li {
     background: black;
