@@ -15,7 +15,7 @@ body {
 input,
 select,
 textarea {
-    max-width: 280px;
+    /*max-width: 280px;*/
 }
 
 
@@ -66,12 +66,19 @@ textarea {
     border: 2px solid #a38d6d;
 }
 
-    #POE_wiki_style input[type=text]:focus, input[type=text]:hover {
-        background: black;
-        color: #D77524;
-        border: 3px solid #dfcc99;
-        outline: none;
-    }
+#POE_wiki_style input[type=text]:focus {
+    background: black;
+    color: #D77524;
+    border: 3px solid #dfcc99;
+    outline: none;
+}
+
+#POE_wiki_style input[type=text]:hover {
+    background: black;
+    color: #D77524;
+    border: 3px solid #dfcc99;
+    outline: none;
+}
 
 #POE_wiki_style input[type=submit] {
     background: #66452c;
@@ -79,9 +86,21 @@ textarea {
     border: solid #66452c;
 }
 
-    #POE_wiki_style input[type=submit]:focus, input[type=submit]:hover {
-        background: #66452c;
-        color: #cd740f;
-        border: solid #66452c;
-        outline: none;
-    }
+#POE_wiki_style input[type=submit]:focus {
+    background: #66452c;
+    color: #cd740f;
+    border: solid #66452c;
+    outline: none;
+}
+
+#POE_wiki_style input[type=submit]:hover {
+    background: #66452c;
+    color: #cd740f;
+    border: solid #66452c;
+    outline: none;
+}
+
+#Machine_learning_style textarea {
+    width: 100%;
+    max-width: none;
+}

@@ -55,7 +55,12 @@
                         <li><a runat="server" href="~/">Домашняя</a></li>
                         <li><a runat="server" href="~/About">Информация</a></li>
                         <li><a runat="server" href="~/Contact">Связаться</a></li>
-
+                        <li class="dropdown">
+                            <a href="#" class="dropdown-toggle" data-toggle="dropdown">MachineLearning <span class="caret"></span></a>
+                            <ul class="dropdown-menu" role="menu">
+                                <li><a class="dropdown-item" runat="server" href="~/Page/MachineLearning/TestExampleKNN_my.aspx">Пример классификатора</a></li>
+                            </ul>
+                        </li>
                         <li class="dropdown" id="POE_wiki_style">
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">POE <span class="caret"></span></a>
                             <ul class="dropdown-menu" role="menu">
