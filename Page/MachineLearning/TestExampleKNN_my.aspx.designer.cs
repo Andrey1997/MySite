@@ -15,6 +15,24 @@ namespace MyWebApplication.Page.MachineLearning
     {
 
         /// <summary>
+        /// TextBoxExample элемент управления.
+        /// </summary>
+        /// <remarks>
+        /// Автоматически создаваемое поле.
+        /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxExample;
+
+        /// <summary>
+        /// TextBoxUserParameter элемент управления.
+        /// </summary>
+        /// <remarks>
+        /// Автоматически создаваемое поле.
+        /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox TextBoxUserParameter;
+
+        /// <summary>
         /// label_1 элемент управления.
         /// </summary>
         /// <remarks>
@@ -22,14 +40,5 @@ namespace MyWebApplication.Page.MachineLearning
         /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label label_1;
-
-        /// <summary>
-        /// text_box элемент управления.
-        /// </summary>
-        /// <remarks>
-        /// Автоматически создаваемое поле.
-        /// Для изменения переместите объявление поля из файла конструктора в файл кода программной части.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox text_box;
     }
 }

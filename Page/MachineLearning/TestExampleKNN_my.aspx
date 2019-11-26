@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="TestExampleKNN_my.aspx.cs" Inherits="MyWebApplication.Page.MachineLearning.TestExampleKNN_my" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="TestExampleKNN_my.aspx.cs" Inherits="MyWebApplication.Page.MachineLearning.TestExampleKNN_my" MaintainScrollPositionOnPostback="true" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         .p_font_size {
@@ -14,7 +14,7 @@
             <p><a href="http://archive.ics.uci.edu/ml/datasets/Adult">Данные были скачены отсюда.</a></p>
             <p>Это данные переписи, задача состоит в предсказании дохода ( > 50000 в год или нет). 
                 Данные с пропущенными значениями отбрасывались. 
-                Всего 45222 объектос (учебных = 30162, тестовых =15060) с процентым содержанием классов 75.22% и 24.78%</p>
+                Всего 45222 объектос (учебных = 30162, тестовых = 15060) с процентым содержанием классов 75.22% и 24.78%.</p>
             <br />
             <p>Информация про свойства объектов:<br />
                 &nbsp&nbsp&nbsp&nbsp возраст: непрерывно<br />
@@ -31,13 +31,20 @@
                 &nbsp&nbsp&nbsp&nbsp потеря капитала: непрерывно<br />
                 &nbsp&nbsp&nbsp&nbsp работает часов в неделю: непрерывно<br />
                 &nbsp&nbsp&nbsp&nbsp родная страна:  United-States, Cambodia, England, Puerto-Rico, Canada, Germany, Outlying-US(Guam-USVI-etc), India, Japan, Greece, South, China, Cuba, Iran, Honduras, Philippines, Italy, Poland, Jamaica, Vietnam, Mexico, Portugal, Ireland, France, Dominican-Republic, Laos, Ecuador, Taiwan, Haiti, Columbia, Hungary, Guatemala, Nicaragua, Scotland, Thailand, Yugoslavia, El-Salvador, Trinadad&Tobago, Peru, Hong, Holand-Netherlands<p>
-            <asp:Label runat="server" ID="label_1" Text=""></asp:Label>
-                <p>----</p>
-                <asp:TextBox Text="" TextMode="MultiLine" runat="server" ID="text_box" Rows="10"   Wrap="False" ReadOnly="true" ></asp:TextBox>
-                <br/>
-                <p>MyText</p>
-                <br/>
-            <asp:Button runat="server" OnClick="KNNClick" Text="run" />
+            
+            <p>----</p>
+            <p>Ниже представлены найденные оптимальные параметры при которых процент ошибки на всей тестовый выборки составляет ~17%.</p>
+            <p>Был применен метод ближайших соседей (без нормализации). На сайте указаны результаты других методов, к примеру, лучшие результаты чуть больше 14%. При использовании метода ближайших соседей результат 20% и 21%, что является самыми плохими результатами среди всех методов.</p>
+            <p>Также есть возможность попробовать задать параметры самому по представленому макету:</p>
+            <p>----</p>
+            <asp:TextBox Text="" TextMode="MultiLine" runat="server" ID="TextBoxExample" Rows="8"   Wrap="False" ReadOnly="true"></asp:TextBox>
+            <br />
+            <asp:TextBox Text="" TextMode="MultiLine" runat="server" ID="TextBoxUserParameter" Rows="8"   Wrap="False"></asp:TextBox>
+            <p>Результат: <asp:Label runat="server" ID="label_1" Text=""></asp:Label></p>
+            <br />
+            <asp:Button runat="server" OnClick="KNNClick" Text="Запустить" />
+            <asp:Button runat="server" OnClick="DefaultExampleClick" Text="Пример по умолчанию" />
+            <br />
         </div>
     </div>
 </asp:Content>
