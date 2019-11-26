@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Life_character.aspx.cs" Inherits="MyWebApplication.Page.POE.Life_character" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Life_character.aspx.cs" Inherits="MyWebApplication.Page.POE.Life_character" MaintainScrollPositionOnPostback="true"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <div style="background-color: Black; min-height: 100vh;" id="POE_wiki_style">
         <div class="container body-content">

@@ -59,5 +59,31 @@ namespace MyWebApplication.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 39,State-gov,77516,Bachelors,13,Never-married,Adm-clerical,Not-in-family,White,Male,2174,0,40,United-States,0
+        ///50,Self-emp-not-inc,83311,Bachelors,13,Married-civ-spouse,Exec-managerial,Husband,White,Male,0,0,13,United-States,0
+        ///38,Private,215646,HS-grad,9,Divorced,Handlers-cleaners,Not-in-family,White,Male,0,0,40,United-States,0
+        ///53,Private,234721,11th,7,Married-civ-spouse,Handlers-cleaners,Husband,Black,Male,0,0,40,United-States,0
+        ///28,Private,338409,Bachelors,13,Married-civ-spouse,Prof-specialty,Wife,Black [остаток строки не уместился]&quot;;.
+        /// </summary>
+        internal static string TeacherDataBase {
+            get {
+                return ResourceManager.GetString("TeacherDataBase", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на 25,Private,226802,11th,7,Never-married,Machine-op-inspct,Own-child,Black,Male,0,0,40,United-States,0
+        ///38,Private,89814,HS-grad,9,Married-civ-spouse,Farming-fishing,Husband,White,Male,0,0,50,United-States,0
+        ///28,Local-gov,336951,Assoc-acdm,12,Married-civ-spouse,Protective-serv,Husband,White,Male,0,0,40,United-States,1
+        ///44,Private,160323,Some-college,10,Married-civ-spouse,Machine-op-inspct,Husband,Black,Male,7688,0,40,United-States,1
+        ///18,?,103497,Some-college,10,Never-married,?,Own-child,White,Female,0,0,30,Un [остаток строки не уместился]&quot;;.
+        /// </summary>
+        internal static string TestDataBase {
+            get {
+                return ResourceManager.GetString("TestDataBase", resourceCulture);
+            }
+        }
     }
 }

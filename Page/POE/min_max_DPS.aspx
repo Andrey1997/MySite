@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="min_max_DPS.aspx.cs" Inherits="MyWebApplication.Page.POE.min_max_DPS" %>
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="min_max_DPS.aspx.cs" Inherits="MyWebApplication.Page.POE.min_max_DPS" MaintainScrollPositionOnPostback="true"%>
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <style>
         .custom-select {
