@@ -145,20 +145,20 @@ namespace MyWebApplication.Page.MachineLearning
 
                 double[] WeightClass = { 0, 0 };
                 int SizeNeighbours = Neighbours.Count();
-                int resprediction_class;
+                int ResultPrediction;
 
                 for (int j = 0; j < SizeNeighbours; j++)
                 {
                     WeightClass[Neighbours[j].Second] += Math.Pow(ParameterWeightFunction_, j);
                 }
 
-                if (WeightClass[0] > WeightClass[1]) resprediction_class = 0;
+                if (WeightClass[0] > WeightClass[1]) ResultPrediction = 0;
                 else
                 {
-                    resprediction_class = 1;
+                    ResultPrediction = 1;
                 }
 
-                if (TestInfo.listObjOne[i].class_id != resprediction_class) NumberError++;
+                if (TestInfo.listObjOne[i].class_id != ResultPrediction) NumberError++;
             }
             return NumberError;
         }
