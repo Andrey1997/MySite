@@ -26,11 +26,18 @@ namespace MyWebApplication.Page.Calculate
 
         public void AddOperation(string operation)
         {
-            ListOperation.Add(operation);
+            if (operation == ")" && ListOperation.Last() == "(")
+            {
+                DeleteLastOperation();
+            }
+            else
+                ListOperation.Add(operation);
         }
 
         public bool СomparisonOperation(string operation)
         {
+            if (ListOperation.Last() == "(") return false;
+
             if (OperationPriority.GetOperationPriority(ListOperation.Last()) < OperationPriority.GetOperationPriority(operation))
             {
                 return false;
@@ -78,7 +85,10 @@ namespace MyWebApplication.Page.Calculate
 
         public double GetPenultimateValue()
         {
-            return ListValue[ListValue.Count() - 2];
+            if (ListValue.Count() > 1)
+                return ListValue[ListValue.Count() - 2];
+            else
+                return 0;
         }
 
         public void DeleteLastValue()
@@ -101,6 +111,15 @@ namespace MyWebApplication.Page.Calculate
             OperationPriority.Add("*", 2);
             OperationPriority.Add("/", 2);
             OperationPriority.Add("^", 3);
+            OperationPriority.Add("(", 0);
+            OperationPriority.Add(")", 0);
+            OperationPriority.Add("!", 4);
+            OperationPriority.Add("cos", 4);
+            OperationPriority.Add("sin", 4);
+            OperationPriority.Add("tan", 4);
+            OperationPriority.Add("sqrt", 4);
+            OperationPriority.Add("log", 4);
+            OperationPriority.Add("ln", 4);
         }
 
         public int GetOperationPriority(string operation)
@@ -138,7 +157,7 @@ namespace MyWebApplication.Page.Calculate
 
                 Expression = Expression.Replace(" ", "");
 
-                string[] TokenExpression = Regex.Split(Expression, @"(\d+[.]\d+)|(\d+)|([*\-+\/\)\(])").Where(st => st != String.Empty).ToArray();
+                string[] TokenExpression = Regex.Split(Expression, @"(\d+[,]\d+)|(\d+)|([*\-+\/\)\(])|(log)|(ln)|(cos)|(sin)|(tan)|(!)|(sqrt)").Where(st => st != String.Empty).ToArray();
 
                 for (int i = 0; i < TokenExpression.Count(); i++)
                 {
@@ -153,10 +172,22 @@ namespace MyWebApplication.Page.Calculate
                     {
                         if (StackOperation.IsEmpty() == true)
                         {
+                            if (TokenExpression[i] == "-") StackValue.AddValue(0);
                             StackOperation.AddOperation(TokenExpression[i]);
                         }
                         else
                         {
+                            if (TokenExpression[i] == "-" && TokenExpression[i - 1] == "(")
+                            {
+                                StackValue.AddValue(0);
+                            }
+
+                            if (TokenExpression[i] == "(")
+                            {
+                                StackOperation.AddOperation(TokenExpression[i]);
+                                continue;
+                            }
+
                             while (true)
                             {
                                 if (StackOperation.IsEmpty() == true) break;
@@ -168,7 +199,6 @@ namespace MyWebApplication.Page.Calculate
                                 {
                                     break;
                                 }
-
                             }
 
                             StackOperation.AddOperation(TokenExpression[i]);
@@ -249,7 +279,83 @@ namespace MyWebApplication.Page.Calculate
                         StackOperation.DeleteLastOperation();
                         break;
                     }
+                case "!":
+                    {
+                        double c = 1;
+                        int number = (int)b;
+                        while (number != 1)
+                        {
+                            c = c * number;
+                            number = number - 1;
+                        }
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "ln":
+                    {
+                        double c = Math.Log(b);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "log":
+                    {
+                        double c = Math.Log(b) / Math.Log(2);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "sin":
+                    {
+                        double c = Math.Sin(b);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "cos":
+                    {
+                        double c = Math.Cos(b);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "tan":
+                    {
+                        double c = Math.Tan(b);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "sqrt":
+                    {
+                        double c = Math.Sqrt(b);
+
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
             }
         }
-
     }
+}
