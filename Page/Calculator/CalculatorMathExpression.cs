@@ -7,235 +7,249 @@ using System.Web;
 
 namespace MyWebApplication.Page.Calculate
 {
-    public enum Mode { RAD, DEG, GRAD };
-    public class CalculatorMathExpression
+    public class ClassStackOperation
     {
-        private ArrayList FunctionList = new ArrayList(new string[] { "abs", "acos", "asin", "atan", "ceil", "cos", "cosh", "exp", "floor", "ln", "log", "sign", "sin", "sinh", "sqrt", "tan", "tanh" });
-        private double Value;
-        private double Factor;
-        private Mode mode;
+        private List<string> ListOperation;
+        private ClassOperationPriority OperationPriority;
 
-        public CalculatorMathExpression()
+        public ClassStackOperation()
         {
-            this.Mode = Mode.RAD;
-        }
-        public CalculatorMathExpression(Mode mode)
-        {
-            this.Mode = mode;
+            ListOperation = new List<string>();
+            OperationPriority = new ClassOperationPriority();
         }
 
-        public double Result
+        public bool IsEmpty()
         {
-            get { return this.Value; }
+            if (ListOperation.Count() == 0) return true;
+            else return false;
         }
-        public Mode Mode
+
+        public void AddOperation(string operation)
         {
-            get { return this.mode; }
-            set
+            ListOperation.Add(operation);
+        }
+
+        public bool СomparisonOperation(string operation)
+        {
+            if (OperationPriority.GetOperationPriority(ListOperation.Last()) < OperationPriority.GetOperationPriority(operation))
             {
-                this.mode = value;
-                switch (value)
-                {
-                    case Mode.RAD:
-                        this.Factor = 1.0;
-                        break;
-                    case Mode.DEG:
-                        this.Factor = 2.0 * Math.PI / 360.0;
-                        break;
-                    case Mode.GRAD:
-                        this.Factor = 2.0 * Math.PI / 400.0;
-                        break;
-                }
+                return false;
+            }
+            else
+            {
+                return true;
             }
         }
 
-        public bool Evaluate(string Expression)
+        public string GetLastOperation()
+        {
+            return ListOperation.Last();
+        }
+
+        public void DeleteLastOperation()
+        {
+            ListOperation.RemoveAt(ListOperation.Count() - 1);
+        }
+
+        public int GetSizeStackOperation()
+        {
+            return ListOperation.Count();
+        }
+    }
+
+    public class ClassStackValue
+    {
+        private List<double> ListValue;
+
+        public ClassStackValue()
+        {
+            ListValue = new List<double>();
+        }
+
+        public void AddValue(double value)
+        {
+            ListValue.Add(value);
+        }
+
+        public double GetLastValue()
+        {
+            return ListValue.Last();
+        }
+
+        public double GetPenultimateValue()
+        {
+            return ListValue[ListValue.Count() - 2];
+        }
+
+        public void DeleteLastValue()
+        {
+            ListValue.RemoveAt(ListValue.Count() - 1);
+        }
+
+    }
+
+    public class ClassOperationPriority
+    {
+        private Dictionary<string, int> OperationPriority;
+
+        public ClassOperationPriority()
+        {
+            OperationPriority = new Dictionary<string, int>();
+
+            OperationPriority.Add("+", 1);
+            OperationPriority.Add("-", 1);
+            OperationPriority.Add("*", 2);
+            OperationPriority.Add("/", 2);
+            OperationPriority.Add("^", 3);
+        }
+
+        public int GetOperationPriority(string operation)
+        {
+            int priority;
+            OperationPriority.TryGetValue(operation, out priority);
+            return priority;
+        }
+    }
+
+
+
+    public class ClassCalculatorMath
+    {
+        private ClassStackOperation StackOperation;
+        private ClassStackValue StackValue;
+
+        private double result;
+        public ClassCalculatorMath()
+        {
+            StackOperation = new ClassStackOperation();
+            StackValue = new ClassStackValue();
+        }
+
+        public double GetResult()
+        {
+            return this.result;
+        }
+
+        public bool Calculate(string Expression)
         {
             try
             {
+                result = 0;
+
                 Expression = Expression.Replace(" ", "");
-                Regex regEx = new Regex(@"(?<=[\d\)])(?=[a-df-z\(])|(?<=pi)(?=[^\+\-\*\/\\^!)])|(?<=\))(?=\d)|(?<=[^\/\*\+\-])(?=exp)", RegexOptions.IgnoreCase);
-                Expression = regEx.Replace(Expression, "*");
-                regEx = new Regex("pi", RegexOptions.IgnoreCase);
-                Expression = regEx.Replace(Expression, Math.PI.ToString());
-                regEx = new Regex(@"([a-z]*)\(([^\(\)]+)\)(\^|!?)", RegexOptions.IgnoreCase);
-                Match m = regEx.Match(Expression);
-                while (m.Success)
+
+                string[] TokenExpression = Regex.Split(Expression, @"(\d+[.]\d+)|(\d+)|([*\-+\/\)\(])").Where(st => st != String.Empty).ToArray();
+
+                for (int i = 0; i < TokenExpression.Count(); i++)
                 {
-                    if (m.Groups[3].Value.Length > 0) Expression = Expression.Replace(m.Value, "{" + m.Groups[1].Value + this.Solve(m.Groups[2].Value) + "}" + m.Groups[3].Value);
-                    else Expression = Expression.Replace(m.Value, m.Groups[1].Value + this.Solve(m.Groups[2].Value));
-                    m = regEx.Match(Expression);
+                    double ValueToken;
+                    bool IsDouble = Double.TryParse(TokenExpression[i], out ValueToken);
+
+                    if (IsDouble == true)
+                    {
+                        StackValue.AddValue(ValueToken);
+                    }
+                    else
+                    {
+                        if (StackOperation.IsEmpty() == true)
+                        {
+                            StackOperation.AddOperation(TokenExpression[i]);
+                        }
+                        else
+                        {
+                            while (true)
+                            {
+                                if (StackOperation.IsEmpty() == true) break;
+                                if (StackOperation.СomparisonOperation(TokenExpression[i]) == true)
+                                {
+                                    Calculation();
+                                }
+                                else
+                                {
+                                    break;
+                                }
+
+                            }
+
+                            StackOperation.AddOperation(TokenExpression[i]);
+                        }
+                    }
                 }
-                this.Value = Convert.ToDouble(this.Solve(Expression));
+
+                int CountOperation = StackOperation.GetSizeStackOperation();
+                for (int i = 0; i < CountOperation; i++)
+                {
+                    Calculation();
+                }
+
+                result = StackValue.GetLastValue();
+                StackValue.DeleteLastValue();
                 return true;
             }
             catch
             {
-                // Shit!
                 return false;
             }
         }
 
-        private string Solve(string Expression)
+        private void Calculation()
         {
-            Regex regEx = new Regex(@"([a-z]{2,})([\+-]?\d+,*\d*[eE][\+-]*\d+|[\+-]?\d+,*\d*)", RegexOptions.IgnoreCase);
-            Match m = regEx.Match(Expression);
-            while (m.Success && this.FunctionList.IndexOf(m.Groups[1].Value.ToLower()) > -1)
-            {
-                switch (m.Groups[1].Value.ToLower())
-                {
-                    case "abs":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Abs(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "acos":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Acos(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "asin":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Asin(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "atan":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Atan(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "cos":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Cos(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "ceil":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Ceiling(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "cosh":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Cosh(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "exp":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Exp(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "floor":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Floor(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "ln":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Log(Convert.ToDouble(m.Groups[2].Value), Math.Exp(1.0)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "log":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Log10(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "sign":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Sign(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "sin":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Sin(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "sinh":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Sinh(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "sqrt":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Sqrt(Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "tan":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Tan(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "tanh":
-                        Expression = Expression.Replace(m.Groups[0].Value, Math.Tanh(this.Factor * Convert.ToDouble(m.Groups[2].Value)).ToString());
-                        m = regEx.Match(Expression);
-                        continue;
-                }
-            }
-            regEx = new Regex(@"\{(.+)\}!");
-            m = regEx.Match(Expression);
-            while (m.Success)
-            {
-                double n = Convert.ToDouble(m.Groups[1].Value);
-                if ((n < 0) && (n != Math.Round(n))) throw new Exception();
-                Expression = regEx.Replace(Expression, this.Fact(Convert.ToDouble(m.Groups[1].Value)).ToString(), 1);
-                m = regEx.Match(Expression);
-            }
-            regEx = new Regex(@"(\d+,*\d*[eE][\+-]?\d+|\d+,*\d*)!");
-            m = regEx.Match(Expression);
-            while (m.Success)
-            {
-                double n = Convert.ToDouble(m.Groups[1].Value);
-                if ((n < 0) && (n != Math.Round(n))) throw new Exception();
-                Expression = regEx.Replace(Expression, this.Fact(Convert.ToDouble(m.Groups[1].Value)).ToString(), 1);
-                m = regEx.Match(Expression);
-            }
-            regEx = new Regex(@"\{(.+)\}\^(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
-            m = regEx.Match(Expression, 0);
-            while (m.Success)
-            {
-                Expression = Expression.Replace(m.Value, Math.Pow(Convert.ToDouble(m.Groups[1].Value), Convert.ToDouble(m.Groups[2].Value)).ToString());
-                m = regEx.Match(Expression);
-            }
-            regEx = new Regex(@"(\d+,*\d*e[\+-]?\d+|\d+,*\d*)\^(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
-            m = regEx.Match(Expression, 0);
-            while (m.Success)
-            {
-                Expression = regEx.Replace(Expression, Math.Pow(Convert.ToDouble(m.Groups[1].Value), Convert.ToDouble(m.Groups[2].Value)).ToString(), 1);
-                m = regEx.Match(Expression);
-            }
-            regEx = new Regex(@"([\+-]?\d+,*\d*[eE][\+-]?\d+|[\-\+]?\d+,*\d*)([\/\*])(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
-            m = regEx.Match(Expression, 0);
-            while (m.Success)
-            {
-                double result;
-                switch (m.Groups[2].Value)
-                {
-                    case "*":
-                        result = Convert.ToDouble(m.Groups[1].Value) * Convert.ToDouble(m.Groups[3].Value);
-                        if ((result < 0) || (m.Index == 0)) Expression = regEx.Replace(Expression, result.ToString(), 1);
-                        else Expression = Expression.Replace(m.Value, "+" + result);
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "/":
-                        result = Convert.ToDouble(m.Groups[1].Value) / Convert.ToDouble(m.Groups[3].Value);
-                        if ((result < 0) || (m.Index == 0)) Expression = regEx.Replace(Expression, result.ToString(), 1);
-                        else Expression = regEx.Replace(Expression, "+" + result, 1);
-                        m = regEx.Match(Expression);
-                        continue;
-                }
-            }
-            regEx = new Regex(@"([\+-]?\d+,*\d*[eE][\+-]?\d+|[\+-]?\d+,*\d*)([\+-])(-?\d+,*\d*[eE][\+-]?\d+|-?\d+,*\d*)");
-            m = regEx.Match(Expression, 0);
-            while (m.Success)
-            {
-                double result;
-                switch (m.Groups[2].Value)
-                {
-                    case "+":
-                        result = Convert.ToDouble(m.Groups[1].Value) + Convert.ToDouble(m.Groups[3].Value);
-                        if ((result < 0) || (m.Index == 0)) Expression = regEx.Replace(Expression, result.ToString(), 1);
-                        else Expression = regEx.Replace(Expression, "+" + result, 1);
-                        m = regEx.Match(Expression);
-                        continue;
-                    case "-":
-                        result = Convert.ToDouble(m.Groups[1].Value) - Convert.ToDouble(m.Groups[3].Value);
-                        if ((result < 0) || (m.Index == 0)) Expression = regEx.Replace(Expression, result.ToString(), 1);
-                        else Expression = regEx.Replace(Expression, "+" + result, 1);
-                        m = regEx.Match(Expression);
-                        continue;
-                }
-            }
-            if (Expression.StartsWith("--")) Expression = Expression.Substring(2);
-            return Expression;
-        }
+            double a = StackValue.GetPenultimateValue();
+            double b = StackValue.GetLastValue();
 
-        private double Fact(double n)
-        {
-            return n == 0.0 ? 1.0 : n * Fact(n - 1.0);
+            switch (StackOperation.GetLastOperation())
+            {
+                case "+":
+                    {
+                        double c = a + b;
+                        StackValue.DeleteLastValue();
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "-":
+                    {
+                        double c = a - b;
+                        StackValue.DeleteLastValue();
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "*":
+                    {
+                        double c = a * b;
+                        StackValue.DeleteLastValue();
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "/":
+                    {
+                        double c = a / b;
+                        StackValue.DeleteLastValue();
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+                case "^":
+                    {
+                        double c = Math.Pow(a, b);
+                        StackValue.DeleteLastValue();
+                        StackValue.DeleteLastValue();
+                        StackValue.AddValue(c);
+
+                        StackOperation.DeleteLastOperation();
+                        break;
+                    }
+            }
         }
 
     }
-}
